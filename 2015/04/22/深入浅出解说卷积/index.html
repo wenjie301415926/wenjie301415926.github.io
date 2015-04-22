@@ -1,0 +1,437 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>深入浅出解说卷积 | 陈文杰的个人博客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="陈文杰">
+    
+
+    
+    <meta name="description" content="写在前面学信号处理的时候，一不留神打了个盹，卷积也就过去了，后来也没有好好去看，等到真想看的时候搜了点资料结果还是没看懂，一拖又是好久，直到最近在学习滤波器部分，又需要信号处理知识。咬了咬牙，决定这次一定要把卷积学得个明明白白，顺带写公式的时候逼着自己学学LaTeX，毕业论文时如果用TeX排版，想想都觉得激动呢~~
+网上有不少资料，讲得很明白的很少。大多都是讲得是卷积的定义和算法，真正的物理意义少">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入浅出解说卷积">
+<meta property="og:url" content="http://wenjie.com/2015/04/22/深入浅出解说卷积/index.html">
+<meta property="og:site_name" content="陈文杰的个人博客">
+<meta property="og:description" content="写在前面学信号处理的时候，一不留神打了个盹，卷积也就过去了，后来也没有好好去看，等到真想看的时候搜了点资料结果还是没看懂，一拖又是好久，直到最近在学习滤波器部分，又需要信号处理知识。咬了咬牙，决定这次一定要把卷积学得个明明白白，顺带写公式的时候逼着自己学学LaTeX，毕业论文时如果用TeX排版，想想都觉得激动呢~~
+网上有不少资料，讲得很明白的很少。大多都是讲得是卷积的定义和算法，真正的物理意义少">
+<meta property="og:image" content="http://7xiepr.com1.z0.glb.clouddn.com/fenjie.JPG">
+<meta property="og:image" content="http://7xiepr.com1.z0.glb.clouddn.com/chongji1.JPG">
+<meta property="og:image" content="http://7xiepr.com1.z0.glb.clouddn.com/chongji.JPG">
+<meta property="og:image" content="http://7xiepr.com1.z0.glb.clouddn.com/chongji3.JPG">
+<meta property="og:image" content="http://7xiepr.com1.z0.glb.clouddn.com/juanji1.JPG">
+<meta property="og:image" content="http://7xiepr.com1.z0.glb.clouddn.com/xitong1.JPG">
+<meta property="og:image" content="http://7xiepr.com1.z0.glb.clouddn.com/xitong2.JPG">
+<meta property="og:image" content="http://7xiepr.com1.z0.glb.clouddn.com/juanji2.JPG">
+<meta property="og:image" content="http://7xiepr.com1.z0.glb.clouddn.com/juanji3.JPG">
+<meta property="og:image" content="http://7xiepr.com1.z0.glb.clouddn.com/juzheng.JPG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入浅出解说卷积">
+<meta name="twitter:description" content="写在前面学信号处理的时候，一不留神打了个盹，卷积也就过去了，后来也没有好好去看，等到真想看的时候搜了点资料结果还是没看懂，一拖又是好久，直到最近在学习滤波器部分，又需要信号处理知识。咬了咬牙，决定这次一定要把卷积学得个明明白白，顺带写公式的时候逼着自己学学LaTeX，毕业论文时如果用TeX排版，想想都觉得激动呢~~
+网上有不少资料，讲得很明白的很少。大多都是讲得是卷积的定义和算法，真正的物理意义少">
+
+    
+    <link rel="alternative" href="/atom.xml" title="陈文杰的个人博客" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="陈文杰的个人博客" title="陈文杰的个人博客"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="陈文杰的个人博客">陈文杰的个人博客</a></h1>
+				<h2 class="blog-motto">301415926,我才不是圆周率</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:wenjie.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/04/22/深入浅出解说卷积/" title="深入浅出解说卷积" itemprop="url">深入浅出解说卷积</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="陈文杰" target="_blank" itemprop="author">陈文杰</a>
+		
+  <p class="article-time">
+    <time datetime="2015-04-22T10:36:32.000Z" itemprop="datePublished"> 发表于 2015-04-22</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#写在前面"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#先讲一个故事"><span class="toc-number">2.</span> <span class="toc-text">先讲一个故事</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NO-1_一般信号时域分解冲击函数"><span class="toc-number">3.</span> <span class="toc-text">NO.1 一般信号时域分解冲击函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#函数时域如何分解"><span class="toc-number">3.0.1.</span> <span class="toc-text">函数时域如何分解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#单位冲击函数δ(t)"><span class="toc-number">3.0.2.</span> <span class="toc-text">单位冲击函数δ(t)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NO-2_冲击函数作为输入的响应——冲击响应"><span class="toc-number">4.</span> <span class="toc-text">NO.2 冲击函数作为输入的响应——冲击响应</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NO-3_一般信号作为输入的响应——>>卷积"><span class="toc-number">5.</span> <span class="toc-text">NO.3 一般信号作为输入的响应——>>卷积</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#信号卷积与数学意义上的卷积有什么不同"><span class="toc-number">6.</span> <span class="toc-text">信号卷积与数学意义上的卷积有什么不同</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">7.</span> <span class="toc-text">参考资料</span></a></li></ol>
+		
+		</div>
+		
+		<h1 id="写在前面">写在前面</h1><p>学信号处理的时候，一不留神打了个盹，卷积也就过去了，后来也没有好好去看，等到真想看的时候搜了点资料结果还是没看懂，一拖又是好久，直到最近在学习滤波器部分，又需要信号处理知识。咬了咬牙，决定这次一定要把卷积学得个明明白白，顺带写公式的时候逼着自己学学LaTeX，毕业论文时如果用TeX排版，想想都觉得激动呢~~</p>
+<p>网上有不少资料，讲得很明白的很少。大多都是讲得是卷积的定义和算法，真正的物理意义少有人说（当然也有几个大神，用比喻的方法说得很好，但数学表述上没怎么着墨）。所以我希望既能把卷积讲得很通俗易懂，又不把数学落下太多。</p>
+<p>我还是从信号处理的角度入手。<strong>一句话表述，卷积就是一系列延时不同的冲击响应的线性叠加：</strong>把输入信号f(t)分解为众多不同延时的冲击函数δ(t-τ)，冲击函数按时延依次排排坐进入系统得到各自的冲击响应h(t-τ)，所有的冲击响应求和即为输入信号f(t)和系统函数h(t)的卷积f(t)*h(t)。</p>
+<p>到这里，如果对信号还有一点印象的同学应该能够理解想通，下面展开细说的内容是对信号忘干净了的人或初学者准备的。</p>
+<a id="more"></a>
+<h1 id="先讲一个故事">先讲一个故事</h1><p>张三刚刚应聘到了一个电子产品公司做测试人员，他没有学过”信号与系统”这门课程。一天，他拿到了一个产品，开发人员告诉他，产品有一个输入端，有一个输出端，有限的输入信号只会产生有限的输出。</p>
+<p>然后，经理让张三测试当输入sin(t)(t&lt;1秒)信号的时候(有信号发生器)，该产品输出什么样的波形。张三照做了，花了一个波形图。”很好！”经理说。然后经理给了张三一叠A4纸:”这里有几千种信号，都用公式说明了，输入信号的持续时间也是确定的。你分别测试以下我们产品的输出波形是什么吧！”</p>
+<p>这下张三懵了，他在心理想”上帝，帮帮我把，我怎么画出这些波形图呢?”<br>于是上帝出现了: “张三，你只要做一次测试，就能用数学的方法，画出所有输入波形对应的输出波形”。上帝接着说:”给产品一个脉冲信号，能量是1焦耳，输出的波形图画出来！”</p>
+<p>张三照办了，”然后呢?”</p>
+<p>上帝又说，”<strong>对于某个输入波形，你想象把它微分成无数个小的脉冲，输入给产品，叠加出来的结果就是你的输出波形。你可以想象这些小脉冲排着队进入你的产品，每个产生一个小的输出，你画出时序图的时候，输入信号的波形好像是反过来进入系统的。</strong>“</p>
+<p>张三领悟了:” 哦，输出的结果就积分出来啦！感谢上帝。这个方法叫什么名字呢?”</p>
+<p>上帝说:”叫卷积！”</p>
+<p>然后我们分三步走，从数学上来得出结论。</p>
+<h1 id="NO-1_一般信号时域分解冲击函数">NO.1 一般信号时域分解冲击函数</h1><p>分解这种思想我觉得真是上升到哲学层次了，各个领域都见得着它。</p>
+<p>学了《信号与系统》的同学对于信号的频域分解——傅立叶级数和傅立叶变换肯定不陌生：我们把一个函数分解成一系列频率不同的三角函数加权和，实现了频域上的分解。这是信号课的最重要的部分，但时域分解往往大家就印象不深了。其实开头学卷积之前就学了信号的时域分解，只不过老师都不是特别强调。时域分解可以分解为阶跃函数，也可以分解为冲击函数，两者有导数关系。这里我们只介绍更为普遍的冲击函数δ(t)。</p>
+<h3 id="函数时域如何分解"><strong>函数时域如何分解</strong></h3><p><img src="http://7xiepr.com1.z0.glb.clouddn.com/fenjie.JPG" alt=""><br>这张图已经把分解思想表述得相当清楚了，就是把信号分解为无数时延不同的脉冲。这是分解的直观介绍，下面我们用数学形式表述。</p>
+<h3 id="单位冲击函数δ(t)"><strong>单位冲击函数δ(t)</strong></h3><p> 单位冲击函数又叫狄拉克函数，它的定义(广义函数型定义)及性质为：<br><img src="http://7xiepr.com1.z0.glb.clouddn.com/chongji1.JPG" alt=""><br> 由上可知，任意一个函数f(t)与延时为a的冲击函数δ(t-a)相乘然后积分，结果正好是f(a);反过来，一个函数的任意一点f(a)，也可以由f(t)与δ(t-a)相乘积分来表示。如果我们把变量t换成变量τ,则变成<br><img src="http://7xiepr.com1.z0.glb.clouddn.com/chongji.JPG" alt=""><br>而δ(t)是偶函数，δ(τ-a)=δ(a-τ)。我们再把任意的a换成t，则原式化为<br><img src="http://7xiepr.com1.z0.glb.clouddn.com/chongji3.JPG" alt=""><br>也即我们刚才表述的：函数被分解为无数时延不同的脉冲，脉冲高度即为原函数在该处的值，我们把所有的脉冲相加组合起来（积分）就得到了原函数。</p>
+<h1 id="NO-2_冲击函数作为输入的响应——冲击响应">NO.2 冲击函数作为输入的响应——冲击响应</h1><p>我们已经弄清楚了函数时域分解后的基本单元是冲击函数δ(t)，那我们只要知道这个基本单元输入系统后得到的响应h(t)——冲击响应，再根据线性时不变系统的特点，即可求一般信号的响应了。</p>
+<p>由于不同的系统，功能不同，不失一般性我们假设任意线性时不变系统的冲击响应为h(t):<br><img src="http://7xiepr.com1.z0.glb.clouddn.com/juanji1.JPG" alt=""><br>然后回忆一下线性时不变系统的几个特点：</p>
+<p>线性系统（包括齐次性和叠加性）<br><img src="http://7xiepr.com1.z0.glb.clouddn.com/xitong1.JPG" alt=""><br>时不变系统<br><img src="http://7xiepr.com1.z0.glb.clouddn.com/xitong2.JPG" alt=""></p>
+<h1 id="NO-3_一般信号作为输入的响应——&gt;&gt;卷积">NO.3 一般信号作为输入的响应——&gt;&gt;卷积</h1><p>利用线性时不变系统的特性，一张图推导：<br><img src="http://7xiepr.com1.z0.glb.clouddn.com/juanji2.JPG" alt=""><br>注意，我们的系统一般为因果系统，即0时刻以前没有输入，所以上述积分是从0开始积分的，这也是接下来要说的，为什么我们经常会说系统某时刻的输出是该时刻之前所有输入对该时刻作用的效果之和。</p>
+<p>我们把由信号处理引出的问题抽象出来，就得到了数学意义上的卷积公式：<br><img src="http://7xiepr.com1.z0.glb.clouddn.com/juanji3.JPG" alt=""><br>这里积分域就是整个R。</p>
+<p>另外多说一句，我们很多人对卷积的印象就是反折移动求和，但这仅仅是卷积的算法，不是它的<strong>物理意义(卷积就是一系列延时不同的冲击响应的线性叠加)</strong>。单纯从算法理解很难理解透彻，不信的话，可以试着区分一下卷积和互相关。</p>
+<h1 id="信号卷积与数学意义上的卷积有什么不同">信号卷积与数学意义上的卷积有什么不同</h1><blockquote>
+<p>为什么我们经常会说系统某时刻的输出是该时刻之前所有输入对该时刻作用的效果之和？</p>
+</blockquote>
+<p>这是我学习时碰到的一个问题。当时看了一个用<a href="http://blog.csdn.net/yeeman/article/details/6325693" target="_blank" rel="external">寓言来讲解卷积</a>的物理意义的文章，很疑惑，打第t个板子的所受痛苦，应该是前面所有（包括第t个）板子在这个时刻引起的痛苦之和，但卷积公式里τ是从负无穷到正无穷的，当τ取负值时，不就代表着t+|τ|个板子引起的痛苦了吗，可这件事都还没有发生，怎么可能会造成影响？</p>
+<p>当时本身就学得不扎实，好不容易遇到感觉讲到点子上的解释，却遇到了这个拦路石，百思不得其姐，后来一忙就给忘了。其实问题的关键就是，我盯着的卷积公式是数学意义上的，而信号处理里的系统一般是<strong>因果系统（0时刻以前输入为0）</strong>，所以一般τ从0开始积分，只能取正值。这样，t-τ必然就是t以前的时刻了。用行列式可以表述得很清楚：<br><img src="http://7xiepr.com1.z0.glb.clouddn.com/juzheng.JPG" alt=""></p>
+<h1 id="参考资料">参考资料</h1><p><a href="http://www.guokr.com/post/344980/" target="_blank" rel="external">大牛讲解信号与系统以及数字信号处理</a></p>
+<p><a href="http://blog.csdn.net/yeeman/article/details/6325693" target="_blank" rel="external">卷积的意义</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://wenjie.com/2015/04/22/深入浅出解说卷积/" data-title="深入浅出解说卷积 | 陈文杰的个人博客" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/04/19/利用github搭建个人博客/"  title="利用github搭建个人博客">
+ <strong>下一篇：</strong><br/> 
+ <span>利用github搭建个人博客
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#写在前面"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#先讲一个故事"><span class="toc-number">2.</span> <span class="toc-text">先讲一个故事</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NO-1_一般信号时域分解冲击函数"><span class="toc-number">3.</span> <span class="toc-text">NO.1 一般信号时域分解冲击函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#函数时域如何分解"><span class="toc-number">3.0.1.</span> <span class="toc-text">函数时域如何分解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#单位冲击函数δ(t)"><span class="toc-number">3.0.2.</span> <span class="toc-text">单位冲击函数δ(t)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NO-2_冲击函数作为输入的响应——冲击响应"><span class="toc-number">4.</span> <span class="toc-text">NO.2 冲击函数作为输入的响应——冲击响应</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NO-3_一般信号作为输入的响应——>>卷积"><span class="toc-number">5.</span> <span class="toc-text">NO.3 一般信号作为输入的响应——>>卷积</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#信号卷积与数学意义上的卷积有什么不同"><span class="toc-number">6.</span> <span class="toc-text">信号卷积与数学意义上的卷积有什么不同</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">7.</span> <span class="toc-text">参考资料</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://mindhacks.cn/" target="_blank" title="思维改变生活">刘未鹏的博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://wuchong.me" target="_blank" title="Jark&#39;s Blog">Jark&#39;s Blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Larry Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		<a href="https://www.facebook.com/wenjie301415926" target="_blank" class="icon-facebook" title="facebook"></a>
+		
+		
+		
+		
+		
+		
+		<a href="mailto:wenjie137855315@163.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="陈文杰">陈文杰</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
